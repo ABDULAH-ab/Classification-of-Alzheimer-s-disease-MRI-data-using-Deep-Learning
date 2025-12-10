@@ -1,14 +1,24 @@
-# Alzheimer's Disease Classification using Deep Learning
+# RADEMIC: Realistic Augmentation and Deep Learning for Enhanced Medical Image Classification of Alzheimer's Disease
 
-A comprehensive deep learning approach for Alzheimer's disease classification from MRI scans, addressing critical limitations in existing research through methodological improvements.
+A comprehensive deep learning approach for Alzheimer's disease classification from MRI scans, addressing critical limitations in existing research through methodological improvements. This project implements multiple architectures (CNN, CNN-LSTM, CNN-SVM, VGG16-SVM) with medically-consistent augmentation strategies.
 
 ## 👥 Team Members
 
-- **Your Name** - Project Lead / Main Contributor
-  - Email: your.email@example.com
-  - GitHub: [@yourusername](https://github.com/yourusername)
+- **Abdullah** - Project Lead / Main Contributor
+  - Email: I221879@nu.edu.pk
+  - Affiliation: School of Computing, FAST NUCES, Islamabad, Pakistan
 
-*Add additional team members here if applicable*
+- **Abdur Rahman Grami** - Contributor
+  - Email: I222008@nu.edu.pk
+  - Affiliation: School of Computing, FAST NUCES, Islamabad, Pakistan
+
+- **Yousha Saibi** - Contributor
+  - Email: L227482@isb.nu.edu.pk
+  - Affiliation: School of Computing, FAST NUCES, Islamabad, Pakistan
+
+- **Dr. Qurat Ul Ain** - Supervisor
+  - Email: quratul.ain@isb.nu.edu.pk
+  - Affiliation: School of Computing, FAST NUCES, Islamabad, Pakistan
 
 ## 📋 Project Overview
 
@@ -61,11 +71,11 @@ This project implements and improves upon existing Alzheimer's disease classific
 Classification-of-Alzheimer-s-disease-MRI-data-using-Deep-Learning/
 │
 ├── Improvements_or_Novelty/          # Main improvements and novelties
-│   ├── 01_fix_dataset.ipynb         # Novelty #1: Data leakage correction
-│   ├── improved-methodology.ipynb   # Combined notebook (all 3 improvements)
-│   ├── Step1_Realistic_Augmentation.ipynb
-│   ├── Step2_GradCAM_Explainability.ipynb
-│   └── Step3_Class_Imbalance_Correction.ipynb
+│   ├── improved-methodology.ipynb   # Complete pipeline: CNN with realistic aug + Grad-CAM + class imbalance
+│   ├── CNN-LSTM-with-augmentation.ipynb  # Standalone CNN-LSTM model (Kaggle-ready)
+│   ├── class-imbalance.ipynb        # Class imbalance correction experiments
+│   ├── conference_101719.tex        # IEEE conference paper (LaTeX)
+│   └── 01_fix_dataset.ipynb         # Dataset cleaning and leakage correction
 │
 ├── Replication of base paper/         # Base paper replication
 │   ├── 01_fix_dataset.ipynb
@@ -73,9 +83,21 @@ Classification-of-Alzheimer-s-disease-MRI-data-using-Deep-Learning/
 │   ├── 03-train-models.ipynb
 │   └── preprocessed_data/
 │
+├── Results/                           # Experimental results and outputs
+│   ├── CNN-LSTM_Realistic_Augmentation_Results.csv
+│   ├── Step1_Realistic_Augmentation_Results.csv
+│   ├── Step3_Class_Imbalance_Results.csv
+│   ├── CNN_Realistic_Aug_model.h5
+│   └── IEEE_*.png                    # IEEE-standard visualizations
+│
 ├── Alzheimer_Clean_Dataset/          # Clean dataset (no leakage)
 │   ├── train/                        # 5,120 images (80%)
+│   │   ├── NonDemented/              # 2,560 images
+│   │   ├── VeryMildDemented/         # Mapped to "Demented"
+│   │   ├── MildDemented/             # Mapped to "Demented"
+│   │   └── ModerateDemented/         # Mapped to "Demented"
 │   └── test/                         # 1,280 images (20%)
+│       └── [same structure]
 │
 └── README.md                          # This file
 ```
@@ -85,81 +107,106 @@ Classification-of-Alzheimer-s-disease-MRI-data-using-Deep-Learning/
 ### Prerequisites
 
 ```bash
-pip install tensorflow keras numpy pandas matplotlib seaborn scikit-learn opencv-python
+pip install tensorflow>=2.18.0 keras numpy pandas matplotlib seaborn scikit-learn opencv-python joblib
 ```
 
-### Running the Combined Notebook (Recommended)
+### Running Models on Kaggle (Recommended)
 
-1. **For Kaggle GPU**:
-   - Upload `Improvements_or_Novelty/improved-methodology.ipynb` to Kaggle
-   - Add dataset: `alzheimer-clean-dataset`
+All models have standalone Kaggle-ready notebooks in `Improvements_or_Novelty/`:
+
+1. **CNN with Realistic Augmentation**:
+   - Notebook: `improved-methodology.ipynb`
+   - Dataset: Add `alzheimer-clean-dataset` to Kaggle
    - Enable GPU accelerator
-   - Run all cells sequentially
+   - Update `DATA_ROOT` if needed (default: `/kaggle/input/alzheimer-clean-dataset/Alzheimer_Clean_Dataset`)
 
-2. **For Local Execution**:
-   - Update `DATA_ROOT` in Cell 2 to your local path:
-     ```python
-     DATA_ROOT = r"D:\...\Alzheimer_Clean_Dataset"
-     ```
-   - Run all cells
+2. **CNN-LSTM with Augmentation**:
+   - Notebook: `CNN-LSTM-with-augmentation.ipynb`
+   - Same dataset setup as above
+   - Batch size: 8 (optimized for memory)
 
-### Running Individual Steps
+3. **CNN-SVM with Augmentation**:
+   - Notebook: `CNN_SVM_with_augmentation.ipynb` (if available)
+   - Batch size: 12 for feature extraction
 
-1. **Data Leakage Correction**:
-   ```bash
-   jupyter notebook Improvements_or_Novelty/01_fix_dataset.ipynb
+4. **VGG16-SVM with Augmentation**:
+   - Notebook: `VGG16_SVM_with_augmentation.ipynb` (if available)
+   - Batch size: 6 (VGG16 requires more memory)
+   - Input size: 224×224
+
+### Running Locally
+
+1. **Update DATA_ROOT** in each notebook:
+   ```python
+   DATA_ROOT = r"D:\...\Alzheimer_Clean_Dataset"
    ```
 
-2. **Realistic Augmentation**:
-   ```bash
-   jupyter notebook Improvements_or_Novelty/Step1_Realistic_Augmentation.ipynb
-   ```
-
-3. **Grad-CAM Explainability**:
-   ```bash
-   jupyter notebook Improvements_or_Novelty/Step2_GradCAM_Explainability.ipynb
-   ```
-
-4. **Class Imbalance Correction**:
-   ```bash
-   jupyter notebook Improvements_or_Novelty/Step3_Class_Imbalance_Correction.ipynb
-   ```
+2. **Run notebooks sequentially**:
+   - Start with `improved-methodology.ipynb` for CNN baseline
+   - Then run individual model notebooks for comparisons
 
 ## 📊 Results Summary
 
-### Model Performance
+### Model Performance Comparison
 
-| Model | Augmentation | Accuracy | Status |
-|-------|-------------|----------|--------|
-| Base Paper (with leakage) | 90° + flips | 99.92% | ❌ Invalid (data leakage) |
-| Replication (static aug) | 90° + flips | 60-66% | ❌ Poor (unrealistic) |
-| CNN-without-Aug (clean) | None | 98.91% | ✅ Good baseline |
-| **OUR IMPROVEMENT** | **±15° only, no flips** | **85%+** | ✅ **Realistic + Dynamic** |
+| Model | Augmentation | Imbalance Correction | Accuracy | Recall | F1-Score | Precision |
+|-------|-------------|---------------------|----------|--------|----------|-----------|
+| Baseline (No Aug) | None | None | 98.91% | 0.9891 | 0.9891 | 0.9891 |
+| Aggressive Aug | 90° rot., flips | None | 60-66% | 0.60-0.66 | 0.61-0.67 | 0.62-0.68 |
+| Realistic Aug | ±15°, no flips | None | 85%+ | 0.85+ | 0.85+ | 0.85+ |
+| **CNN (Baseline)** | Realistic | None | **97.89%** | **0.9719** | **0.9788** | **0.9857** |
+| **CNN (Class Weights)** | Realistic | Class-weighted | **98.28%** | **0.9797** | **0.9828** | **0.9858** |
+| CNN (Focal Loss) | Realistic | Focal loss | 97.97% | 0.9750 | 0.9796 | 0.9842 |
+| **CNN-LSTM** | Realistic | None | **92.34%** | **0.9063** | **0.9221** | **0.9385** |
 
 ### Key Findings
 
-- **Data Leakage Impact**: Corrected dataset reveals realistic performance (~85%) vs. inflated metrics (99.92%)
-- **Augmentation Strategy**: Realistic augmentation outperforms aggressive augmentation by 20%+
-- **Class Imbalance**: Class weights and Focal Loss improve minority class recall
-- **Explainability**: Grad-CAM validates model focuses on clinically relevant brain regions
+- **Best Performance**: CNN with class-weighted loss achieves **98.28% accuracy** and **97.97% recall**
+- **Data Leakage Impact**: Corrected dataset reveals realistic performance (97.89%) vs. inflated metrics (99.92%)
+- **Augmentation Strategy**: Realistic augmentation outperforms aggressive augmentation by **22-25%**
+- **Class Imbalance Correction**: Class-weighted loss improves recall by **+0.78%** (critical for minority class detection)
+- **CNN-LSTM**: Hybrid architecture achieves **92.34% accuracy** with **94.06% specificity**
+- **Explainability**: Grad-CAM validates model focuses on clinically relevant brain regions (hippocampus, ventricles)
 
 ## 🔬 Methodology
 
-### Model Architecture
+### Model Architectures
 
-- **Architecture**: Enhanced CNN with BatchNormalization
+#### 1. CNN Architecture (Primary)
 - **Input Size**: 128×128×3 (RGB)
-- **Convolutional Blocks**: 4 blocks (32→64→128→256 filters)
-- **Dense Layers**: 512→256→128→2
-- **Regularization**: Dropout (0.25-0.5) and BatchNormalization
+- **Convolutional Blocks**: 
+  - Block 1: Two 32-filter 3×3 convs + BN + MaxPool + 25% dropout
+  - Block 2: Two 64-filter 3×3 convs + BN + MaxPool + 25% dropout
+  - Block 3: Two 128-filter 3×3 convs + BN + MaxPool + 30% dropout
+  - Block 4: One 256-filter 3×3 conv + BN + MaxPool + 30% dropout
+- **Dense Layers**: 512→256→128→2 with BN and dropout (40-50%)
+- **Total Parameters**: ~2.5 million
+- **Best Performance**: 98.28% accuracy with class-weighted loss
+
+#### 2. CNN-LSTM Hybrid Architecture
+- **CNN Feature Extraction**: Same 4 blocks as CNN (32→64→128→256 filters)
+- **Reshape**: 8×8×256 → 64×256 sequence format
+- **Time-Distributed Dense**: 128 units with BN and 35% dropout
+- **LSTM Layers**: Single LSTM (64 units) with dropout (0.4) and recurrent dropout (0.4)
+- **Classification Head**: 128→64→2 with BN and dropout (50%)
+- **Regularization**: L2 regularization (1e-4 for conv/LSTM, 1e-3 for dense)
+- **Total Parameters**: ~1.8 million
+- **Performance**: 92.34% accuracy, 90.63% recall, 94.06% specificity
 
 ### Training Configuration
 
-- **Optimizer**: Adam (learning_rate=0.0003)
-- **Loss Function**: Sparse Categorical Crossentropy (or Focal Loss for imbalance)
-- **Batch Size**: 64 (optimized for GPU)
-- **Epochs**: 150 (with early stopping)
-- **Callbacks**: EarlyStopping, ReduceLROnPlateau
+- **Optimizer**: Adam (learning_rate=0.001, beta_1=0.9, beta_2=0.999)
+- **Loss Function**: 
+  - Baseline: Sparse Categorical Crossentropy
+  - Class-weighted: Inverse class frequency weighting
+  - Focal Loss: γ=2.0, α=0.25
+- **Batch Size**: 
+  - CNN: 64 (optimized for GPU)
+  - CNN-LSTM: 8 (memory-efficient)
+- **Epochs**: 150 with early stopping (patience=20)
+- **Callbacks**: 
+  - EarlyStopping (monitor='val_accuracy', patience=20)
+  - ReduceLROnPlateau (factor=0.5, patience=10, min_lr=1e-6)
 
 ### Augmentation Strategy
 
@@ -178,40 +225,74 @@ pip install tensorflow keras numpy pandas matplotlib seaborn scikit-learn opencv
 
 ## 📈 Experimental Results
 
-### Part 1: Realistic Augmentation
-- **Accuracy**: 85%+
-- **Improvement**: +22% over static aggressive augmentation
-- **Training Time**: ~30-40 minutes (GPU)
+### CNN Model Results
 
-### Part 2: Grad-CAM Explainability
-- **Visualizations**: Heatmaps showing model focus regions
-- **Clinical Validation**: Model correctly identifies hippocampus and ventricles
-- **Sample Accuracy**: 90% on test samples
+**Baseline (Realistic Augmentation)**:
+- Accuracy: 97.89%
+- Recall: 97.19%
+- F1-Score: 97.88%
+- Precision: 98.57%
 
-### Part 3: Class Imbalance Correction
-- **Baseline Recall**: Varies by model
-- **Class Weights**: Improved recall on minority class
-- **Focal Loss**: Enhanced sensitivity to hard examples
+**Class-Weighted Loss (Best Model)**:
+- Accuracy: **98.28%** (+0.39%)
+- Recall: **97.97%** (+0.78%)
+- F1-Score: **98.28%** (+0.40%)
+- Precision: 98.58% (+0.01%)
 
-## 📝 Paper Contributions
+**Focal Loss**:
+- Accuracy: 97.97% (+0.08%)
+- Recall: 97.50% (+0.31%)
+- F1-Score: 97.96% (+0.08%)
+- Precision: 98.42% (-0.15%)
+
+### CNN-LSTM Model Results
+
+- Accuracy: **92.34%**
+- Recall: 90.63%
+- F1-Score: 92.21%
+- Precision: 93.85%
+- Specificity: 94.06%
+
+### Key Improvements
+
+1. **Realistic Augmentation**: +22-25% improvement over aggressive augmentation (60-66% → 85%+)
+2. **Class Imbalance Correction**: +0.78% recall improvement (critical for minority class detection)
+3. **Data Leakage Correction**: Realistic metrics (97.89%) vs. inflated (99.92%)
+4. **Grad-CAM Validation**: Model focuses on clinically relevant regions (hippocampus, ventricles)
+
+## 📝 Paper Information
+
+### Conference Paper
+
+**Title**: RADEMIC: Realistic Augmentation and Deep Learning for Enhanced Medical Image Classification of Alzheimer's Disease
+
+**Format**: IEEE Conference Paper (LaTeX)
+
+**Location**: `Improvements_or_Novelty/conference_101719.tex`
 
 ### Abstract Summary
 
-> "We identify and address critical limitations in existing Alzheimer's disease classification research: (1) data leakage between train/test sets, (2) anatomically unrealistic augmentation strategies, and (3) severe class imbalance. Our contributions include: a cleaned dataset with proper stratification, a medically-consistent augmentation pipeline, systematic evaluation of class imbalance correction techniques, and explainable AI via Grad-CAM. Using a CNN architecture, we achieve 85%+ accuracy with validated generalization, demonstrating the importance of proper experimental methodology in medical AI."
+> "Alzheimer's disease (AD) is a progressive neurodegenerative disorder affecting millions worldwide. Early and accurate diagnosis using magnetic resonance imaging (MRI) is crucial for effective treatment planning. This paper addresses critical limitations in existing deep learning approaches for AD classification: data leakage between training and testing sets, anatomically unrealistic data augmentation strategies, and severe class imbalance. We propose three key contributions: (1) a realistic augmentation pipeline that preserves anatomical consistency, (2) gradient-weighted class activation mapping (Grad-CAM) for model explainability, and (3) systematic evaluation of class imbalance correction techniques including class-weighted loss and focal loss. Using a convolutional neural network (CNN) architecture, our method achieves 98.28% accuracy with 97.97% recall on a properly stratified dataset of 6,400 MRI images."
 
 ### Key Sections
 
 1. **Introduction**: Problem statement and limitations of existing work
 2. **Related Work**: Review of base paper and data leakage issues
 3. **Methodology**: 
-   - Data leakage correction
+   - Dataset description and binary label mapping
+   - Model architectures (CNN, CNN-LSTM)
    - Realistic augmentation strategy
-   - Class imbalance correction
-   - Model architecture
-   - Explainability (Grad-CAM)
-4. **Experiments & Results**: Comprehensive comparison and analysis
-5. **Discussion**: Why methodology matters more than architecture
-6. **Conclusion**: Clinical implications and reproducibility lessons
+   - Grad-CAM for explainability
+   - Class imbalance correction techniques
+   - Training configuration
+4. **Experimental Results**: 
+   - Comprehensive performance comparison (Table I)
+   - Class imbalance correction results (Table II)
+   - CNN-LSTM performance analysis
+   - Grad-CAM visualizations
+   - Quantitative improvements summary
+5. **Discussion**: Clinical implications and methodology importance
+6. **Conclusion**: Future work and clinical deployment considerations
 
 ## 🛠️ Technical Details
 
@@ -248,13 +329,28 @@ opencv-python>=4.8.0
 If you use this work, please cite:
 
 ```bibtex
-@misc{alzheimer_classification_improvements,
-  title={Improving Alzheimer's Disease Classification: Addressing Data Leakage, Realistic Augmentation, and Class Imbalance in MRI Analysis},
-  author={Your Name},
+@inproceedings{rademic2025,
+  title={RADEMIC: Realistic Augmentation and Deep Learning for Enhanced Medical Image Classification of Alzheimer's Disease},
+  author={Abdullah and Grami, Abdur Rahman and Saibi, Yousha and Ain, Qurat Ul},
+  booktitle={IEEE Conference Proceedings},
   year={2025},
-  note={Methodological improvements for reliable medical AI}
+  organization={IEEE}
 }
 ```
+
+## 📊 Output Files
+
+All results and visualizations are saved in the `Results/` directory:
+
+- **CSV Results**: Performance metrics for all models
+- **Model Files**: Trained models (`.h5` format)
+- **IEEE Visualizations**: High-resolution figures for paper (300 DPI, Times New Roman)
+  - Confusion matrices
+  - ROC curves
+  - Training curves
+  - Grad-CAM heatmaps
+  - Class distribution charts
+  - Metrics comparisons
 
 ## 📧 Contact
 
